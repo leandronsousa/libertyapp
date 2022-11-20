@@ -1,0 +1,39 @@
+version: '2.1'
+services:
+  build: 
+    image: 
+    container_name: docker_build
+    volumes:
+     - .:/opt/projeto
+     - ~/.m2/repository:/opt/maven_repo
+    environment:
+     - LOCAL_USER_NAME=$USER
+    depends_on:
+      banco:
+        condition: service_healthy
+      mq:
+        condition: service_healthy
+    links:
+     - banco
+     - mq
+    command: mvn clean package
+  banco:
+    image: postgres:latest
+    container_name: docker-postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: passwd
+      POSTGRES_USER: xauser
+      POSTGRES_DB: xadb
+  mq:
+    image: ibmcom/mq
+    container_name: docker-ibm-mq
+    healthcheck:
+      test: ["CMD-SHELL", "dspmq|grep Running && echo 0 || echo 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+    environment:
+      LICENSE: 'accept'
+      MQ_QMGR_NAME: 'QM1'
+      

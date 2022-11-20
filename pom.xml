@@ -1,0 +1,215 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>br.com</groupId>
+    <artifactId>libertyapp</artifactId>
+    <packaging>war</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+
+     <!-- <parent>
+        <groupId>io.openliberty.tools</groupId>
+        <artifactId>liberty-maven-app-parent</artifactId>
+        <version>3.7.1</version>
+    </parent> -->
+
+    <parent>
+    	<groupId>org.springframework.boot</groupId>
+    	<artifactId>spring-boot-starter-parent</artifactId>
+    	<version>2.7.5</version>
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <packaging.type>minify,runnable</packaging.type>
+
+		<version.org.springframework.boot>2.7.5</version.org.springframework.boot>
+		<version.org.hibernate>5.6.14.Final</version.org.hibernate>
+		<version.com.atomikos>4.0.6</version.com.atomikos>
+
+        <liberty.var.default.http.port>9080</liberty.var.default.http.port>
+        <liberty.var.default.https.port>9443</liberty.var.default.https.port>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>usr-package</id>
+            <properties>
+                <packaging.type>usr</packaging.type>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-dependencies</artifactId>
+			<version>${version.org.springframework.boot}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+	      	<groupId>org.springframework.boot</groupId>
+	      	<artifactId>spring-boot-starter-data-jpa</artifactId>
+	    </dependency>
+	    <dependency>
+	      	<groupId>org.springframework.boot</groupId>
+	      	<artifactId>spring-boot-starter-artemis</artifactId>
+	    </dependency>
+	    <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jta-atomikos</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-java8</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions-jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions-api</artifactId>
+			<version>${version.com.atomikos}</version>
+		</dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+		<!-- Drivers para DB2 -->
+		<!-- <dependency>
+			<groupId>com.ibm.db2.jdbc</groupId>
+			<artifactId>jcc4-driver</artifactId>
+			<version>4.24.92</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.db2.jdbc</groupId>
+			<artifactId>jcc-driver-license-cu</artifactId>
+			<version>10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.db2.jdbc</groupId>
+			<artifactId>jcc-driver-license-cisuz</artifactId>
+			<version>10.1</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>com.ibm.mq</groupId>
+			<artifactId>com.ibm.mq.allclient</artifactId>
+			<version>9.3.1.0</version>
+		</dependency>
+
+		<dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+        <plugin>
+                <groupId>io.openliberty.tools</groupId>
+                <artifactId>liberty-maven-plugin</artifactId>
+                <!-- <version>3.7.1</version> -->
+                <configuration>
+                	<!-- <appsDirectory>apps</appsDirectory> -->
+                	<!-- <packageName>LibertySpringBootApp</packageName> -->
+                	<assemblyArtifact>
+                        <groupId>io.openliberty</groupId>
+                        <artifactId>openliberty-runtime</artifactId>
+                        <version>[22.0.0.11,)</version>
+                        <type>zip</type>
+                    </assemblyArtifact>
+                    <serverName>${project.artifactId}Server</serverName>
+                    <include>minify,runnable</include>
+                </configuration>
+                <executions>
+                	<execution>
+                		<id>package-server</id>
+                		<phase>package</phase>
+                		<goals>
+                			<goal>create</goal>
+                			<goal>install-feature</goal>
+                			<goal>deploy</goal>
+                			<goal>package</goal>
+                		</goals>
+                	</execution>
+                </executions>
+               <!--  <configuration>
+                    <assemblyArtifact>
+                        <groupId>io.openliberty</groupId>
+                        <artifactId>openliberty-runtime</artifactId>
+                        <version>[21.0.0.3,)</version>
+                        <type>zip</type>
+                    </assemblyArtifact>
+                    <serverName>${project.artifactId}Server</serverName>
+                    <include>${packaging.type}</include>
+                </configuration> -->
+            </plugin>
+        	<plugin>
+		        <groupId>org.springframework.boot</groupId>
+		        <artifactId>spring-boot-maven-plugin</artifactId>
+		    </plugin>
+		    <plugin>
+		    	<artifactId>maven-failsafe-plugin</artifactId>
+		        <executions>
+		          <execution>
+		            <goals>
+		              <goal>integration-test</goal>
+		              <goal>verify</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>
+            <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <packagingExcludes>pom.xml</packagingExcludes>
+                </configuration>
+            </plugin> -->
+            <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <http.port>${liberty.var.default.http.port}</http.port>
+                        <context.root>/</context.root>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin> -->
+        </plugins>
+    </build>
+</project>
