@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com</groupId>
     <artifactId>libertyapp</artifactId>
-    <packaging>war</packaging>
+    <!-- <packaging>war</packaging> -->
     <version>0.0.1-SNAPSHOT</version>
 
      <!-- <parent>
@@ -32,14 +32,14 @@
         <liberty.var.default.https.port>9443</liberty.var.default.https.port>
     </properties>
 
-    <profiles>
+    <!-- <profiles>
         <profile>
             <id>usr-package</id>
             <properties>
                 <packaging.type>usr</packaging.type>
             </properties>
         </profile>
-    </profiles>
+    </profiles> -->
 
     <dependencies>
 		<dependency>
@@ -124,20 +124,37 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-        <plugin>
+            <plugin>
+		        <groupId>org.springframework.boot</groupId>
+		        <artifactId>spring-boot-maven-plugin</artifactId>
+		    </plugin>
+            <plugin>
+		    	<artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.2</version>
+		        <executions>
+		          <execution>
+		            <goals>
+		              <goal>integration-test</goal>
+		              <goal>verify</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>
+            <plugin>
                 <groupId>io.openliberty.tools</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
                 <!-- <version>3.7.1</version> -->
                 <configuration>
-                	<!-- <appsDirectory>apps</appsDirectory> -->
-                	<!-- <packageName>LibertySpringBootApp</packageName> -->
-                	<assemblyArtifact>
+                	<appsDirectory>apps</appsDirectory>
+                    <installAppPackages>spring-boot-project</installAppPackages>
+                	<packageName>LibertySpringBootApp</packageName>
+                	<!-- <assemblyArtifact>
                         <groupId>io.openliberty</groupId>
                         <artifactId>openliberty-runtime</artifactId>
                         <version>[22.0.0.11,)</version>
                         <type>zip</type>
                     </assemblyArtifact>
-                    <serverName>${project.artifactId}Server</serverName>
+                    <serverName>${project.artifactId}Server</serverName> -->
                     <include>minify,runnable</include>
                 </configuration>
                 <executions>
@@ -152,64 +169,7 @@
                 		</goals>
                 	</execution>
                 </executions>
-               <!--  <configuration>
-                    <assemblyArtifact>
-                        <groupId>io.openliberty</groupId>
-                        <artifactId>openliberty-runtime</artifactId>
-                        <version>[21.0.0.3,)</version>
-                        <type>zip</type>
-                    </assemblyArtifact>
-                    <serverName>${project.artifactId}Server</serverName>
-                    <include>${packaging.type}</include>
-                </configuration> -->
             </plugin>
-        	<plugin>
-		        <groupId>org.springframework.boot</groupId>
-		        <artifactId>spring-boot-maven-plugin</artifactId>
-		    </plugin>
-		    <plugin>
-		    	<artifactId>maven-failsafe-plugin</artifactId>
-		        <executions>
-		          <execution>
-		            <goals>
-		              <goal>integration-test</goal>
-		              <goal>verify</goal>
-		            </goals>
-		          </execution>
-		        </executions>
-		      </plugin>
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version>
-                <configuration>
-                    <packagingExcludes>pom.xml</packagingExcludes>
-                </configuration>
-            </plugin> -->
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.19.1</version>
-                <configuration>
-                    <systemPropertyVariables>
-                        <http.port>${liberty.var.default.http.port}</http.port>
-                        <context.root>/</context.root>
-                    </systemPropertyVariables>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin> -->
         </plugins>
     </build>
 </project>

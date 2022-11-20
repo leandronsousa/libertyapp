@@ -6,7 +6,7 @@
         <feature>springBoot-2.0</feature>
 	</featureManager>
 
-	<springBootApplication id="liberty" location="thin-liberty.jar" name="liberty" />
+	<springBootApplication id="liberty" location="thin-libertyapp.jar" name="libertyapp" />
 
 	<httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443" />
 

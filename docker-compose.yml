@@ -1,8 +1,8 @@
 version: '2.1'
 services:
   build: 
-    image: 
-    container_name: docker_build
+    image: ibmcom/websphere-liberty:full-java17-openj9-ubi
+    container_name: docker-build
     volumes:
      - .:/opt/projeto
      - ~/.m2/repository:/opt/maven_repo
@@ -21,6 +21,11 @@ services:
     image: postgres:latest
     container_name: docker-postgres
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
     environment:
       POSTGRES_PASSWORD: passwd
       POSTGRES_USER: xauser
