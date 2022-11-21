@@ -25,8 +25,10 @@ public class PGConfiguration {
 
     @Bean
     public XADataSource xaDataSource() {
+        String host = System.getenv("HOST_BANCO");
+        host = host == null || host.isBlank() ? "localhost" : host;
         PGXADataSource dataSource = new PGXADataSource();
-        dataSource.setServerNames(new String[] { "127.0.0.1" });
+        dataSource.setServerNames(new String[] { host });
         dataSource.setPortNumbers(new int[] { 5432 });
         dataSource.setDatabaseName("xadb");
         dataSource.setUser("xauser");

@@ -1,13 +1,15 @@
 version: '2.1'
 services:
-  build: 
-    image: ibmcom/websphere-liberty:full-java17-openj9-ubi
-    container_name: docker-build
-    volumes:
-     - .:/opt/projeto
-     - ~/.m2/repository:/opt/maven_repo
+  app:
+    image: libertyapp:1.0-SNAPSHOT
+    container_name: docker-app
+    networks:
+      libertynet:
+          aliases:
+            - app
     environment:
-     - LOCAL_USER_NAME=$USER
+      HOST_BANCO: banco
+      HOST_MQ: mq
     depends_on:
       banco:
         condition: service_healthy
@@ -16,11 +18,14 @@ services:
     links:
      - banco
      - mq
-    command: mvn clean package
   banco:
     image: postgres:latest
     container_name: docker-postgres
     restart: always
+    networks:
+      libertynet:
+        aliases:
+          - banco
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
@@ -32,7 +37,11 @@ services:
       POSTGRES_DB: xadb
   mq:
     image: ibmcom/mq
-    container_name: docker-ibm-mq
+    container_name: docker-mq
+    networks:
+      libertynet:
+        aliases:
+          - mq
     healthcheck:
       test: ["CMD-SHELL", "dspmq|grep Running && echo 0 || echo 1"]
       interval: 10s
@@ -41,4 +50,6 @@ services:
     environment:
       LICENSE: 'accept'
       MQ_QMGR_NAME: 'QM1'
-      
+
+networks:
+  libertynet:

@@ -35,7 +35,9 @@ package br.com.libertyapp.config;
  	private MQXAQueueConnectionFactory mqXAQueueConnectionFactory() {
  		MQXAQueueConnectionFactory factory = new MQXAQueueConnectionFactory();
  		try {
-            factory.setHostName("localhost");
+            String host = System.getenv("HOST_BANCO");
+            host = host == null || host.isEmpty() ? "localhost" : host;
+            factory.setHostName(host);
  			factory.setPort(1414);
  			factory.setQueueManager("QM1");
  			factory.setChannel("DEV.APP.SVRCONN");
