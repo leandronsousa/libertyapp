@@ -2,7 +2,7 @@ version: '2.1'
 services:
   app:
     image: libertyapp:1.0-SNAPSHOT
-    container_name: docker-app
+    container_name: app
     networks:
       libertynet:
           aliases:
@@ -20,7 +20,7 @@ services:
      - mq
   banco:
     image: postgres:latest
-    container_name: docker-postgres
+    container_name: postgres
     restart: always
     networks:
       libertynet:
@@ -37,7 +37,7 @@ services:
       POSTGRES_DB: xadb
   mq:
     image: ibmcom/mq
-    container_name: docker-mq
+    container_name: mq
     networks:
       libertynet:
         aliases:

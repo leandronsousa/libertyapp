@@ -26,7 +26,7 @@ public class PGConfiguration {
     @Bean
     public XADataSource xaDataSource() {
         String host = System.getenv("HOST_BANCO");
-        host = host == null || host.isBlank() ? "localhost" : host;
+        host = host == null || host.isEmpty() ? "localhost" : host;
         PGXADataSource dataSource = new PGXADataSource();
         dataSource.setServerNames(new String[] { host });
         dataSource.setPortNumbers(new int[] { 5432 });
